@@ -1,18 +1,12 @@
-import Link from "next/link";
-import React from "react";
-import { Icons } from "./Icon";
-import { buttonVariants } from "./ui/Button";
-import { userSession } from "@/lib/user-session";
 import { getAuthSession } from "@/lib/auth";
+import Link from "next/link";
+import { Icons } from "./Icon";
 import UserAccountNav from "./UserAccountNav";
+import { buttonVariants } from "./ui/Button";
 
 const Navbar = async () => {
-  // const user = await userSession();
   const session = await getAuthSession();
   const user = session?.user;
-
-  console.log(user);
-  // bestlink paul
 
   return (
     <div className="fixed top-0 inset-x-0  h-fit bg-zinc-100 border-b border-zinc-300 z-10 py-2">

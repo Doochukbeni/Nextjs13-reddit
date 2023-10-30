@@ -1,19 +1,25 @@
+import { getAuthSession } from "@/lib/auth";
 import { Prismadb } from "@/lib/db";
-import { userSession } from "@/lib/user-session";
 import { SubredditValidator } from "@/lib/validators/subreddit";
 import { z } from "zod";
 
 export async function POST(req: Request) {
   try {
-    const session = await userSession();
+    // check if the user is logged in
+    const userSession = await getAuthSession();
+    const session = userSession?.user;
+
     if (!session) {
       return new Response("Unauthorized", { status: 401 });
     }
 
     const body = await req.json();
 
-    const { name } = SubredditValidator.parse({ body });
+    // validate user input in the backend as well
+    const { name } = SubredditValidator.parse(body);
+    console.log("route payload", name);
 
+    // check if user already exist
     const subredditExist = await Prismadb.subreddit.findFirst({
       where: {
         name,
@@ -24,6 +30,8 @@ export async function POST(req: Request) {
       return new Response("Subreddit Already Exist", { status: 409 });
     }
 
+    // create a new subredit community
+
     const subreddit = await Prismadb.subreddit.create({
       data: {
         name,
@@ -31,6 +39,7 @@ export async function POST(req: Request) {
       },
     });
 
+    // subscribe to the community after creation
     await Prismadb.subscription.create({
       data: {
         userId: session.id,

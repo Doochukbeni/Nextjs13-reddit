@@ -21,31 +21,49 @@ const page = () => {
         name: input,
       };
 
-      const { data } = await axios.post("/api/subreddit", payload);
+      console.log("payload data", payload);
 
-      return data as string;
+      const { data } = await axios.post(
+        "/api/subreddit",
+        JSON.stringify(payload)
+      );
+
+      console.log("axios data", data);
+
+      return data;
     },
+
     onError: (err) => {
       if (err instanceof AxiosError) {
         if (err.response?.status === 409) {
           return toast({
-            title: "Subreddit already Exist.",
-            description: "Please choose a different subreddit name.",
+            title: "Subreddit already exists.",
+            description: "Please choose a different name.",
             variant: "destructive",
           });
         }
 
         if (err.response?.status === 422) {
           return toast({
-            title: "Invalid Subreddit name.",
-            description: "Please choose a name between 3 and 21 characters.",
+            title: "Invalid subreddit name.",
+            description: "Please choose a name between 3 and 21 letters.",
             variant: "destructive",
           });
         }
+
         if (err.response?.status === 401) {
           return loginToast();
         }
       }
+
+      toast({
+        title: "There was an error.",
+        description: "Could not create subreddit.",
+        variant: "destructive",
+      });
+    },
+    onSuccess: (data) => {
+      router.push(`/r/${data}`);
     },
   });
 
