@@ -21,8 +21,6 @@ const page = () => {
         name: input,
       };
 
-      console.log("payload data", payload);
-
       const { data } = await axios.post(
         "/api/subreddit",
         JSON.stringify(payload)

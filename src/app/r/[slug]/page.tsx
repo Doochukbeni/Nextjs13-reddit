@@ -1,3 +1,4 @@
+import MiniCreatePost from "@/components/MiniCreatePost";
 import { INFINITE_SCROLLING_PAGINATION_RESULT } from "@/config";
 import { getAuthSession } from "@/lib/auth";
 import { Prismadb } from "@/lib/db";
@@ -46,7 +47,6 @@ const community = async ({ params }: CommunityProp) => {
       },
     },
   });
-  console.log("subredit slug", subreddit);
 
   if (!subreddit) return notFound();
 
@@ -55,6 +55,7 @@ const community = async ({ params }: CommunityProp) => {
       <h1 className="font-bold text-3xl md:text-4xl h-14">
         r/{subreddit.name}
       </h1>
+      <MiniCreatePost session={session} />
     </>
   );
 };
