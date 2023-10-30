@@ -1,16 +1,20 @@
 import Navbar from "@/components/Navbar";
+import { cn } from "@/lib/utils";
+import { Inter as FontSans } from "next/font/google";
 import Providers from "@/components/Providers";
 import { Toaster } from "@/components/ui/Toaster";
-import { cn } from "@/lib/utils";
+
 import "@/styles/globals.css";
-import { Inter } from "next/font/google";
+
+export const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata = {
   title: "Breadit",
   description: "A Reddit clone built with Next.js and TypeScript.",
 };
-
-const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -22,7 +26,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("bg-white text-slate-900 antialiased", inter.className)}
+      className={cn(
+        "bg-white text-slate-900 antialiased font-light",
+        fontSans.variable
+      )}
+      // className={cn("bg-white text-slate-900 antialiased", inter.className)}
     >
       <body className="min-h-screen pt-12 bg-slate-50 antialiased">
         <Providers>
