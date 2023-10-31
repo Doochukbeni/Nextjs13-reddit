@@ -2,7 +2,6 @@ import Editor from "@/components/Editor";
 import { Button } from "@/components/ui/Button";
 import { Prismadb } from "@/lib/db";
 import { notFound } from "next/navigation";
-import React from "react";
 
 interface PageProps {
   params: {
@@ -33,7 +32,7 @@ const page = async ({ params }: PageProps) => {
       </div>
 
       {/* form  */}
-      <Editor />
+      <Editor subredditId={subreddit.id} />
 
       <div className="w-full flex justify-end">
         <Button type="submit" className="w-full" form="subreddit-post-form">
