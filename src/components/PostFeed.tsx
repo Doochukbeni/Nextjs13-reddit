@@ -59,11 +59,22 @@ const PostFeed = ({ initialPosts, subredditName, session }: PostFeedprops) => {
         if (index === posts.length - 1) {
           return (
             <li key={post.id} ref={ref}>
-              <Post />
+              <Post
+                commentAmount={post.comments.length}
+                subredditName={post.subreddit.name}
+                post={post}
+              />
             </li>
           );
         } else {
-          return <Post key={post.id} />;
+          return (
+            <Post
+              commentAmount={post.comments.length}
+              key={post.id}
+              subredditName={post.subreddit.name}
+              post={post}
+            />
+          );
         }
 
         return <div></div>;
