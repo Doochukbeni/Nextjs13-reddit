@@ -61,7 +61,7 @@ const Editor = ({ subredditId }: EditorProps) => {
           linkTool: {
             class: LinkTool,
             config: {
-              endpoint: "api/link",
+              endpoint: "/api/link",
             },
           },
           image: {

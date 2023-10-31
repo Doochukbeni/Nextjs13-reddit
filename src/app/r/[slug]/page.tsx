@@ -1,4 +1,5 @@
 import MiniCreatePost from "@/components/MiniCreatePost";
+import PostFeed from "@/components/PostFeed";
 import { INFINITE_SCROLLING_PAGINATION_RESULT } from "@/config";
 import { getAuthSession } from "@/lib/auth";
 import { Prismadb } from "@/lib/db";
@@ -16,20 +17,6 @@ const community = async ({ params }: CommunityProp) => {
 
   const session = await getAuthSession();
 
-  // const subreddit = await Prismadb.subreddit.findFirst({
-  //   where: { name: slug },
-  //   include: {
-  //     posts: {
-  //       include: {
-  //         author: true,
-  //         votes: true,
-  //         subreddit: true,
-  //         comments: true,
-  //       },
-  //       take: INFINITE_SCROLLING_PAGINATION_RESULT,
-  //     },
-  //   },
-  // });
   const subreddit = await Prismadb.subreddit.findFirst({
     where: { name: slug },
     include: {
@@ -58,6 +45,11 @@ const community = async ({ params }: CommunityProp) => {
       <MiniCreatePost session={session} />
 
       {/* TODO: show posts in user feed */}
+      <PostFeed
+        session={session}
+        initialPosts={subreddit.posts}
+        subredditName={subreddit.name}
+      />
     </>
   );
 };
