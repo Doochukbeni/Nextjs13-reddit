@@ -63,21 +63,23 @@ const PostFeed = ({ initialPosts, subredditName, session }: PostFeedprops) => {
                 commentAmount={post.comments.length}
                 subredditName={post.subreddit.name}
                 post={post}
+                voteAmount={voteAmount}
+                currentVote={currentVote}
               />
             </li>
           );
         } else {
           return (
             <Post
-              commentAmount={post.comments.length}
               key={post.id}
+              commentAmount={post.comments.length}
               subredditName={post.subreddit.name}
               post={post}
+              voteAmount={voteAmount}
+              currentVote={currentVote}
             />
           );
         }
-
-        return <div></div>;
       })}
     </ul>
   );
