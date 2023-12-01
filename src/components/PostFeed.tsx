@@ -1,17 +1,18 @@
 "use client";
+
 import { INFINITE_SCROLLING_PAGINATION_RESULT } from "@/config";
 import { ExtendedPost } from "@/types/prismadb";
 import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Session } from "next-auth";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Post from "./Post";
 
 interface PostFeedprops {
   initialPosts: ExtendedPost[];
   subredditName?: string;
-  session: Session | null;
+  session?: Session | null;
 }
 
 const PostFeed = ({ initialPosts, subredditName, session }: PostFeedprops) => {
@@ -40,6 +41,13 @@ const PostFeed = ({ initialPosts, subredditName, session }: PostFeedprops) => {
       initialData: { pages: [initialPosts], pageParams: [1] },
     }
   );
+
+  useEffect(() => {
+    if (entry?.isIntersecting) {
+      fetchNextPage();
+    }
+  }, [entry, fetchNextPage]);
+
   const posts = data?.pages.flatMap((page) => page) ?? initialPosts;
 
   return (
