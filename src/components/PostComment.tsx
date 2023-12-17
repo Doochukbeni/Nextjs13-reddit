@@ -37,7 +37,7 @@ const PostComment = ({ comment }: PostCommentProps) => {
         </div>
       </div>
 
-      <p className="text-sm text-zinc-900 mt-2">{comment.text} </p>
+      <p className="text-sm text-zinc-900 mt-2">{comment.text}</p>
     </div>
   );
 };
