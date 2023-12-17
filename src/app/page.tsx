@@ -16,7 +16,7 @@ export default async function Home() {
         {/*@ts-expect-error server component*/}
 
         {session ? <CustomFeed /> : <GeneralFeed />}
-        {/* feed  */}
+       
 
         {/* subreddit info */}
         <div className="overflow-hidden h-fit rounded-lg border border-gray-200 order-first md:order-last">
