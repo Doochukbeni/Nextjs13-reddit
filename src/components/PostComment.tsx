@@ -8,11 +8,15 @@ import UserAvatar from "@/components/UserAvatar";
 import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
 import { Textarea } from "@/components/ui/Textarea";
+import useCustomToast from "@/hooks/use-custom-toast";
+import { toast } from "@/hooks/use-toast";
 import { formatTimeToNow } from "@/lib/utils";
+import { CommentRequest } from "@/lib/validators/comments";
+import { useMutation } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
 import { MessageSquare } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { getAuthSession } from "@/lib/auth";
 
 type ExtendedComment = Comment & {
   votes: CommentVote[];
@@ -37,7 +41,38 @@ const PostComment = ({
   const { data: session } = useSession();
   const [isReplying, setIsReplying] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { loginToast } = useCustomToast();
+
+  const { mutate: commentReply, isLoading } = useMutation({
+    mutationFn: async ({ postId, text, replyToId }: CommentRequest) => {
+      const payload: CommentRequest = { postId, text, replyToId };
+
+      const { data } = await axios.patch(
+        `/api/subreddit/post/comment`,
+        payload
+      );
+
+      return data;
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 401) {
+          return loginToast();
+        }
+      }
+
+      return toast({
+        title: "There was a problem",
+        description: "Something went wrong please try again",
+        variant: "destructive",
+      });
+    },
+    onSuccess: () => {
+      router.refresh();
+      setInput("");
+      setIsReplying(false);
+    },
+  });
 
   return (
     <div ref={commentRef} className="flex flex-col ">
@@ -62,7 +97,7 @@ const PostComment = ({
 
       <p className="text-sm text-zinc-900 mt-2">{comment.text}</p>
 
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-2 items-center flex-wrap">
         <CommentVotes
           commentId={comment.id}
           initialVoteAmount={voteAmount}
@@ -70,7 +105,7 @@ const PostComment = ({
         />
 
         <Button
-          onClick={async () => {
+          onClick={() => {
             if (!session) return router.push("/sign-in");
             setIsReplying(true);
           }}
@@ -84,7 +119,9 @@ const PostComment = ({
 
         {isReplying ? (
           <div className="grid w-full gap-1.5">
-            <Label htmlFor="comment">Your comment</Label>
+            <Label htmlFor="comment" className="text-muted-foreground">
+              Your comment
+            </Label>
             <div className="mt-2">
               <Textarea
                 placeholder="got anything to say?"
@@ -94,13 +131,26 @@ const PostComment = ({
                 rows={1}
               />
 
-              <div className="flex mt-2 justify-end">
+              <div className="flex mt-2 justify-end gap-2">
                 <Button
-                  className=""
+                  variant="subtle"
+                  tabIndex={-1}
+                  onClick={() => setIsReplying(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
                   variant="outline"
                   isLoading={isLoading}
                   disabled={input.length === 0}
-                  // onClick={() => comment({ postId, text: input, replyToId })}
+                  onClick={() => {
+                    if (!input) return;
+                    commentReply({
+                      postId,
+                      text: input,
+                      replyToId: comment.replyToId ?? comment.id,
+                    });
+                  }}
                 >
                   Post
                 </Button>

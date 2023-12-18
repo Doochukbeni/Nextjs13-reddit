@@ -31,24 +31,23 @@ const PostVotesClient = ({
 
   const prevVote = usePrevious(currentVote);
 
+  // ensure sync with server
   useEffect(() => {
     setCurrentVote(initialVote);
   }, [initialVote]);
 
   const { mutate: vote, isLoading } = useMutation({
-    mutationFn: async (voteType: VoteType) => {
+    mutationFn: async (type: VoteType) => {
       const payload: PostVoteRequest = {
         postId,
-        voteType,
+        voteType: type,
       };
 
       await axios.patch("/api/subreddit/post/vote", payload);
     },
     onError: (error, VoteType) => {
       if (VoteType === "UP") setVoteAmount((prev) => prev - 1);
-      else {
-        setVoteAmount((prev) => prev + 1);
-      }
+      else setVoteAmount((prev) => prev + 1);
 
       // reset currentVote
       setCurrentVote(prevVote);
@@ -66,28 +65,24 @@ const PostVotesClient = ({
     },
     onMutate: (type: VoteType) => {
       if (currentVote === type) {
+        // meaning user is voting the same way again
         setCurrentVote(undefined);
 
-        if (type === "UP") {
-          setVoteAmount((prev) => prev + 1);
-
-          // check this out before anything else
-          console.log("new vote added UP");
-        } else if (type === "DOWN") {
-          setVoteAmount((prev) => prev - 1);
-        }
+        if (type === "UP") setVoteAmount((prev) => prev - 1);
+        else if (type === "DOWN") setVoteAmount((prev) => prev + 1);
       } else {
+        // user voting the opposite side, subtract 2
         setCurrentVote(type);
         if (type === "UP")
-          return setVoteAmount((prev) => prev + (currentVote ? 2 : 1));
+          setVoteAmount((prev) => prev + (currentVote ? 2 : 1));
         else if (type === "DOWN")
-          return setVoteAmount((prev) => prev - (currentVote ? 2 : 1));
+          setVoteAmount((prev) => prev - (currentVote ? 2 : 1));
       }
     },
   });
 
   return (
-    <div className="flex sm:flex-col gap-4 sm:gap-0 pr-6 sm:w-20 pb-4 sm:pb-0">
+    <div className="flex flex-col gap-4 sm:gap-0 pr-6 sm:w-20 pb-4 sm:pb-0">
       <Button
         size="sm"
         variant="ghost"
