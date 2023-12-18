@@ -1,28 +1,29 @@
 "use client";
 
-import useCustomToast from "@/hooks/use-custom-toast";
-import { usePrevious } from "@mantine/hooks";
-import { VoteType } from "@prisma/client";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/Button";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useMutation } from "@tanstack/react-query";
-import { PostVoteRequest } from "@/lib/validators/vote";
+import { CommentVote, VoteType } from "@prisma/client";
+import { usePrevious } from "@mantine/hooks";
 import axios, { AxiosError } from "axios";
-import { toast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 
-interface PostVotesClientProps {
-  postId: string;
+import { Button } from "@/components/ui/Button";
+import useCustomToast from "@/hooks/use-custom-toast";
+import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import { CommentValidatorRequest } from "@/lib/validators/vote";
+
+interface CommentVotesClientProps {
+  commentId: string;
   initialVoteAmount: number;
-  initialVote?: VoteType | null;
+  initialVote?: Pick<CommentVote, "type">;
 }
 
-const PostVotesClient = ({
-  postId,
+const CommentVotes = ({
+  commentId,
   initialVoteAmount,
   initialVote,
-}: PostVotesClientProps) => {
+}: CommentVotesClientProps) => {
   const { loginToast } = useCustomToast();
 
   const [voteAmount, setVoteAmount] = useState<number>(initialVoteAmount);
@@ -31,22 +32,19 @@ const PostVotesClient = ({
 
   const prevVote = usePrevious(currentVote);
 
-  useEffect(() => {
-    setCurrentVote(initialVote);
-  }, [initialVote]);
-
   const { mutate: vote, isLoading } = useMutation({
     mutationFn: async (voteType: VoteType) => {
-      const payload: PostVoteRequest = {
-        postId,
+      const payload: CommentValidatorRequest = {
+        commentId,
         voteType,
       };
 
-      await axios.patch("/api/subreddit/post/vote", payload);
+      await axios.patch("/api/subreddit/post/comment/vote", payload);
     },
     onError: (error, VoteType) => {
-      if (VoteType === "UP") setVoteAmount((prev) => prev - 1);
-      else {
+      if (VoteType === "UP") {
+        setVoteAmount((prev) => prev - 1);
+      } else {
         setVoteAmount((prev) => prev + 1);
       }
 
@@ -64,20 +62,15 @@ const PostVotesClient = ({
         variant: "destructive",
       });
     },
-    onMutate: (type: VoteType) => {
-      if (currentVote === type) {
+    onMutate: (type) => {
+      if (currentVote?.type === type) {
         setCurrentVote(undefined);
 
         if (type === "UP") {
-          setVoteAmount((prev) => prev + 1);
-
-          // check this out before anything else
-          console.log("new vote added UP");
-        } else if (type === "DOWN") {
           setVoteAmount((prev) => prev - 1);
-        }
+        } else if (type === "DOWN") setVoteAmount((prev) => prev + 1);
       } else {
-        setCurrentVote(type);
+        setCurrentVote({ type });
         if (type === "UP")
           return setVoteAmount((prev) => prev + (currentVote ? 2 : 1));
         else if (type === "DOWN")
@@ -87,7 +80,7 @@ const PostVotesClient = ({
   });
 
   return (
-    <div className="flex sm:flex-col gap-4 sm:gap-0 pr-6 sm:w-20 pb-4 sm:pb-0">
+    <div className="flex gap-1">
       <Button
         size="sm"
         variant="ghost"
@@ -96,7 +89,7 @@ const PostVotesClient = ({
       >
         <ArrowBigUp
           className={cn("h-5 w-5 text-zinc-700", {
-            "text-emerald-500 fill-emerald-500": currentVote === "UP",
+            "text-emerald-500 fill-emerald-500": currentVote?.type === "UP",
           })}
         />
       </Button>
@@ -112,7 +105,7 @@ const PostVotesClient = ({
       >
         <ArrowBigDown
           className={cn("h-5 w-5 text-zinc-700", {
-            "text-red-500 fill-red-500": currentVote === "DOWN",
+            "text-red-500 fill-red-500": currentVote?.type === "DOWN",
           })}
         />
       </Button>
@@ -120,4 +113,4 @@ const PostVotesClient = ({
   );
 };
 
-export default PostVotesClient;
+export default CommentVotes;
