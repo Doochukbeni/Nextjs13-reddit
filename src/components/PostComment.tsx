@@ -1,13 +1,18 @@
 "use client";
 
-import { useRef } from "react";
 import { Comment, CommentVote, User } from "@prisma/client";
+import { useRef, useState } from "react";
 
 import CommentVotes from "@/components/CommentVotes";
 import UserAvatar from "@/components/UserAvatar";
-import { formatTimeToNow } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { Label } from "@/components/ui/Label";
+import { Textarea } from "@/components/ui/Textarea";
+import { formatTimeToNow } from "@/lib/utils";
 import { MessageSquare } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { getAuthSession } from "@/lib/auth";
 
 type ExtendedComment = Comment & {
   votes: CommentVote[];
@@ -28,9 +33,14 @@ const PostComment = ({
   postId,
 }: PostCommentProps) => {
   const commentRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [isReplying, setIsReplying] = useState<boolean>(false);
+  const [input, setInput] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
-    <div className="flex flex-col ">
+    <div ref={commentRef} className="flex flex-col ">
       <div className="flex items-center">
         <UserAvatar
           user={{
@@ -60,6 +70,10 @@ const PostComment = ({
         />
 
         <Button
+          onClick={async () => {
+            if (!session) return router.push("/sign-in");
+            setIsReplying(true);
+          }}
           variant="ghost"
           size="xs"
           className="flex items-center text-zinc-500"
@@ -67,6 +81,33 @@ const PostComment = ({
           <MessageSquare className="h-3.5 w-3.5 mr-1.5" />
           Reply
         </Button>
+
+        {isReplying ? (
+          <div className="grid w-full gap-1.5">
+            <Label htmlFor="comment">Your comment</Label>
+            <div className="mt-2">
+              <Textarea
+                placeholder="got anything to say?"
+                id="comment"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                rows={1}
+              />
+
+              <div className="flex mt-2 justify-end">
+                <Button
+                  className=""
+                  variant="outline"
+                  isLoading={isLoading}
+                  disabled={input.length === 0}
+                  // onClick={() => comment({ postId, text: input, replyToId })}
+                >
+                  Post
+                </Button>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
