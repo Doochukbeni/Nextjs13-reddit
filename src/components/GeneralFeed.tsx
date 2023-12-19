@@ -1,7 +1,8 @@
+import React from "react";
+
 import { INFINITE_SCROLLING_PAGINATION_RESULT } from "@/config";
 import { Prismadb } from "@/lib/db";
-import React from "react";
-import PostFeed from "./PostFeed";
+import PostFeed from "@/components/PostFeed";
 
 const GeneralFeed = async () => {
   const posts = await Prismadb.post.findMany({

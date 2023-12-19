@@ -2,10 +2,11 @@
 
 import { Session } from "next-auth";
 import { usePathname, useRouter } from "next/navigation";
+import { ImageIcon, Link2 } from "lucide-react";
+
 import UserAvatar from "@/components/UserAvatar";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { ImageIcon, Link2 } from "lucide-react";
 
 interface MiniCreatePostParams {
   session: Session | null;

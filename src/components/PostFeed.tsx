@@ -1,13 +1,14 @@
 "use client";
 
-import { INFINITE_SCROLLING_PAGINATION_RESULT } from "@/config";
-import { ExtendedPost } from "@/types/prismadb";
-import { useIntersection } from "@mantine/hooks";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 import axios from "axios";
 import { Session } from "next-auth";
-import { useEffect, useRef } from "react";
-import Post from "./Post";
+import { useIntersection } from "@mantine/hooks";
+import { useInfiniteQuery } from "@tanstack/react-query";
+
+import { INFINITE_SCROLLING_PAGINATION_RESULT } from "@/config";
+import { ExtendedPost } from "@/types/prismadb";
+import Post from "@/components/Post";
 
 interface PostFeedprops {
   initialPosts: ExtendedPost[];

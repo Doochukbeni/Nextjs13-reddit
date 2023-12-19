@@ -47,7 +47,7 @@ function CustomImageRenderer({ data }: any) {
   const src = data.file.url;
 
   return (
-    <div className="relative w-full min-h-[15rem] min-w-[530px]">
+    <div className="relative w-full h-full min-h-[15rem] ">
       <Image src={src} fill alt="image" className="object-contain" />
     </div>
   );

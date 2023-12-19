@@ -1,6 +1,13 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import axios from "axios";
+import debounce from "lodash.debounce";
+import { useQuery } from "@tanstack/react-query";
+import { Prisma, Subreddit } from "@prisma/client";
+import { usePathname, useRouter } from "next/navigation";
+import { Users } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
 import {
   Command,
   CommandEmpty,
@@ -9,12 +16,6 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/Command";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { Prisma, Subreddit } from "@prisma/client";
-import { usePathname, useRouter } from "next/navigation";
-import { Users } from "lucide-react";
-import debounce from "lodash.debounce";
 import { useOnClickOutside } from "@/hooks/use-on-click-outside";
 
 const SearchBar = () => {

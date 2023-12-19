@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
-import { Label } from "./ui/Label";
-import { Textarea } from "./ui/Textarea";
-import { Button } from "./ui/Button";
 import { useMutation } from "@tanstack/react-query";
-import { CommentRequest } from "@/lib/validators/comments";
+import React, { useState } from "react";
 import axios, { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
+
+import { Label } from "@/components/ui/Label";
+import { Textarea } from "@/components/ui/Textarea";
+import { Button } from "@/components/ui/Button";
+import { CommentRequest } from "@/lib/validators/comments";
 import { toast } from "@/hooks/use-toast";
 import useCustomToast from "@/hooks/use-custom-toast";
-import { useRouter } from "next/navigation";
 
 interface CreateCommentProps {
   postId: string;

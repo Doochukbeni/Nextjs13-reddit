@@ -1,13 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
-import useCustomToast from "@/hooks/use-custom-toast";
-import { toast } from "@/hooks/use-toast";
-import { SubscribeToSubredditPayload } from "@/lib/validators/subreddit";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { startTransition } from "react";
+
+import { Button } from "@/components/ui/Button";
+import useCustomToast from "@/hooks/use-custom-toast";
+import { toast } from "@/hooks/use-toast";
+import { SubscribeToSubredditPayload } from "@/lib/validators/subreddit";
 
 interface SubscribeLeaveToggleProps {
   subredditId: string;

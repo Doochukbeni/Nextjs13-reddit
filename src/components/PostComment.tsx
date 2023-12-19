@@ -2,6 +2,11 @@
 
 import { Comment, CommentVote, User } from "@prisma/client";
 import { useRef, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { MessageSquare } from "lucide-react";
+import axios, { AxiosError } from "axios";
 
 import CommentVotes from "@/components/CommentVotes";
 import UserAvatar from "@/components/UserAvatar";
@@ -12,11 +17,6 @@ import useCustomToast from "@/hooks/use-custom-toast";
 import { toast } from "@/hooks/use-toast";
 import { formatTimeToNow } from "@/lib/utils";
 import { CommentRequest } from "@/lib/validators/comments";
-import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
-import { MessageSquare } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 type ExtendedComment = Comment & {
   votes: CommentVote[];

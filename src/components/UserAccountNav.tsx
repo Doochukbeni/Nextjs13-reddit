@@ -1,6 +1,8 @@
 "use client";
 
 import { User } from "next-auth";
+import Link from "next/link";
+import { signOut } from "next-auth/react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,9 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/Dropdown-menu";
-import UserAvatar from "./UserAvatar";
-import Link from "next/link";
-import { signOut } from "next-auth/react";
+import UserAvatar from "@/components/UserAvatar";
 
 interface UserAccountNavProps {
   user: Pick<User, "name" | "email" | "image">;

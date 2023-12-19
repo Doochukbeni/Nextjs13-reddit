@@ -1,7 +1,7 @@
-import { INFINITE_SCROLLING_PAGINATION_RESULT } from "@/config";
 import { Prismadb } from "@/lib/db";
-import React from "react";
-import PostFeed from "./PostFeed";
+
+import { INFINITE_SCROLLING_PAGINATION_RESULT } from "@/config";
+import PostFeed from "@/components/PostFeed";
 import { getAuthSession } from "@/lib/auth";
 
 const CustomFeed = async () => {

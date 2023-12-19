@@ -1,7 +1,7 @@
 import { getAuthSession } from "@/lib/auth";
 import { Prismadb } from "@/lib/db";
-import CreateComment from "./CreateComment";
-import PostComment from "./PostComment";
+import CreateComment from "@/components/CreateComment";
+import PostComment from "@/components/PostComment";
 
 interface CommentSectionsProps {
   postId: string;

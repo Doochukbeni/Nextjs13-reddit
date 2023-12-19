@@ -1,9 +1,10 @@
-import { formatTimeToNow } from "@/lib/utils";
-import { Post, User, Vote } from "@prisma/client";
 import { MessageSquare } from "lucide-react";
-import React, { useRef } from "react";
-import EditorOutput from "./EditorOutput";
-import PostVotesClient from "./post-vote/PostVotesClient";
+import { useRef } from "react";
+import { Post, User, Vote } from "@prisma/client";
+
+import { formatTimeToNow } from "@/lib/utils";
+import EditorOutput from "@/components/EditorOutput";
+import PostVotesClient from "@/components/post-vote/PostVotesClient";
 
 type PartialVote = Pick<Vote, "type">;
 
@@ -29,7 +30,6 @@ const Post = ({
   return (
     <div className="rounded-md bg-white shadow">
       <div className="p-6 py-4 flex justify-between">
-        {/* TODO: postvotes */}
         <PostVotesClient
           initialVoteAmount={voteAmount}
           postId={post.id}
